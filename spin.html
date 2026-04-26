@@ -3,191 +3,177 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>عجلة الحظ - بلبن</title>
+    <title>Lucky Wheel - عجلة الحظ من بلبن</title>
     <style>
+        /* تعريف الألوان الخاصة بهوية بلبن */
         :root {
-            --blaban-blue: #004aad;
+            --primary-blue: #004aad;
             --gold: #d4af37;
-            --white: #ffffff;
+            --secondary-blue: #001a33;
         }
 
         body {
             margin: 0;
+            padding: 0;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
+            justify-content: center;
             height: 100vh;
             background: radial-gradient(circle, #0056cc 0%, #001a33 100%);
-            font-family: 'Segoe UI', Tahoma, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: white;
             overflow: hidden;
+            direction: rtl;
         }
 
-        .container { text-align: center; position: relative; }
-
-        /* حاوية العجلة مع الإطار الخارجي */
-        .wheel-wrapper {
+        /* حاوية العجلة - تشد العين باهتزاز خفيف وإضاءة */
+        .wheel-container {
             position: relative;
             width: 380px;
             height: 380px;
-            padding: 15px;
-            background: var(--gold);
             border-radius: 50%;
-            box-shadow: 0 0 40px rgba(0,0,0,0.6), inset 0 0 10px rgba(0,0,0,0.5);
-            border: 4px solid #fff;
+            border: 15px solid #fff;
+            box-shadow: 0 0 80px rgba(0,0,0,0.8), inset 0 0 20px rgba(0,0,0,0.3);
+            overflow: hidden;
+            animation: vibe 1.5s infinite alternate; /* اهتزاز خفيف لجذب الانتباه */
         }
 
-        /* المؤشر (السهم) العلوي */
+        /* المؤشر السهم الأحمر */
         .pointer {
             position: absolute;
-            top: -10px;
+            top: -25px;
             left: 50%;
             transform: translateX(-50%);
-            width: 45px;
-            height: 45px;
+            width: 50px;
+            height: 50px;
             background: #ff0000;
             clip-path: polygon(50% 100%, 0 0, 100% 0);
             z-index: 100;
-            filter: drop-shadow(0 4px 4px rgba(0,0,0,0.4));
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.6));
         }
 
+        /* عنصر الدوران البرمجي */
         canvas {
+            display: block;
             border-radius: 50%;
-            transition: transform 7s cubic-bezier(0.1, 0, 0.1, 1);
-            background: #fff;
+            /* حركة واقعية تبدأ انفجارية وتتباطأ تدريجياً */
+            transition: transform 7s cubic-bezier(0.1, 0.7, 0.1, 1); 
         }
 
+        /* زر اللف - ذهبي وفخم */
         .spin-btn {
             margin-top: 40px;
-            padding: 15px 60px;
-            font-size: 24px;
+            padding: 20px 70px;
+            font-size: 26px;
             font-weight: bold;
-            color: var(--blaban-blue);
-            background: #fff;
-            border: 4px solid var(--gold);
-            border-radius: 50px;
+            color: white;
+            background: linear-gradient(135deg, #d4af37 0%, #b8912b 100%);
+            border: 5px solid #fff;
+            border-radius: 60px;
             cursor: pointer;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
-            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transition: 0.3s;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
 
-        .spin-btn:hover { transform: scale(1.1); background: var(--gold); color: #fff; }
-        .spin-btn:disabled { background: #666; color: #999; cursor: not-allowed; border-color: #444; }
+        .spin-btn:hover {
+            transform: scale(1.08);
+            box-shadow: 0 15px 40px rgba(212, 175, 55, 0.7);
+        }
 
-        /* نافذة النتيجة الاحترافية */
+        .spin-btn:disabled {
+            background: #666;
+            cursor: not-allowed;
+            border-color: #999;
+        }
+
+        /* النافذة المنبثقة للنتيجة الاحترافية */
         .modal {
             display: none;
             position: fixed;
             top: 50%; left: 50%;
             transform: translate(-50%, -50%);
             background: white;
-            padding: 30px;
-            border-radius: 25px;
+            color: #333;
+            padding: 40px;
+            border-radius: 30px;
             text-align: center;
             z-index: 1000;
-            width: 300px;
-            box-shadow: 0 0 100px rgba(0,0,0,0.9);
-            border-top: 10px solid var(--blaban-blue);
+            width: 320px;
+            box-shadow: 0 0 150px rgba(0,0,0,0.9);
+            border: 4px solid var(--gold);
         }
 
         .modal button {
-            background: var(--blaban-blue);
-            color: white; border: none; padding: 12px;
-            border-radius: 10px; width: 100%; cursor: pointer;
-            font-weight: bold; font-size: 18px; margin-top: 20px;
+            background: var(--primary-blue);
+            color: white; border: none; padding: 15px 30px;
+            border-radius: 12px; margin-top: 25px; cursor: pointer;
+            font-weight: bold; width: 100%; font-size: 18px;
+        }
+
+        /* حركات إضافية للواقعية والاهتزاز */
+        @keyframes vibe {
+            0% { transform: scale(1.0); }
+            100% { transform: scale(1.02); box-shadow: 0 0 100px rgba(255, 255, 255, 0.5); }
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="wheel-wrapper">
-            <div class="pointer"></div>
-            <canvas id="wheelCanvas" width="380" height="380"></canvas>
-        </div>
-        <button class="spin-btn" id="spinBtn" onclick="executeSpin()">لف العجلة واربح!</button>
+    <div class="pointer"></div>
+    <div class="wheel-container">
+        <canvas id="wheel" width="380" height="380"></canvas>
     </div>
 
-    <div id="resultModal" class="modal">
-        <h2 style="color: #d63031;">حظ موفق!</h2>
-        <p style="color: #333; line-height: 1.6;">للأسف لم تربح في هذه المحاولة. حاول مرة أخرى غداً مع عروض بلبن "عفاريت الأسفلت".</p>
-        <button onclick="redirect()">موافق</button>
+    <button class="spin-btn" id="spin-btn" onclick="executeSpin()">لف العجلة واربح!</button>
+
+    <div id="modal" class="modal">
+        <h1 style="color: #d63031;">حظ موفق!</h1>
+        <p style="font-size: 18px; line-height: 1.6;">للأسف لم تربح في هذه المحاولة. حاول مرة أخرى غداً مع عروض بلبن الجديدة.</p>
+        <button onclick="goToFacebook()">موافق</button>
     </div>
 
     <script>
-        const canvas = document.getElementById('wheelCanvas');
+        const canvas = document.getElementById('wheel');
         const ctx = canvas.getContext('2d');
-        const items = [
-            { label: "عفاريت 1", color: "#004aad" },
-            { label: "حظ موفق", color: "#ffffff" },
-            { label: "السبيكة", color: "#d4af37" },
-            { label: "عفاريت 2", color: "#004aad" },
-            { label: "حظ موفق", color: "#ffffff" },
-            { label: "السبيكة", color: "#d4af37" },
-            { label: "عفاريت 3", color: "#004aad" },
-            { label: "حظ موفق", color: "#ffffff" }
-        ];
+        const numSectors = 8;
+        const arc = 2 * Math.PI / numSectors;
 
-        const numSectors = items.length;
-        const anglePerSector = (Math.PI * 2) / numSectors;
-
-        function draw() {
-            ctx.clearRect(0, 0, 380, 380);
-            items.forEach((item, i) => {
-                const angle = i * anglePerSector;
-                
-                // رسم القطاع
+        // رسم العجلة البرمجية المتكاملة
+        function drawWheel() {
+            for (let i = 0; i < numSectors; i++) {
+                const angle = i * arc;
                 ctx.beginPath();
-                ctx.fillStyle = item.color;
+                
+                // تلوين القطاعات (تدرج الأزرق والأبيض)
+                ctx.fillStyle = i % 2 === 0 ? '#004aad' : '#ffffff';
                 ctx.moveTo(190, 190);
-                ctx.arc(190, 190, 190, angle, angle + anglePerSector);
+                ctx.arc(190, 190, 190, angle, angle + arc);
                 ctx.fill();
                 ctx.strokeStyle = "#fff";
                 ctx.lineWidth = 2;
                 ctx.stroke();
 
-                // رسم النص
+                // إضافة النصوص والأصناف بالكود
                 ctx.save();
                 ctx.translate(190, 190);
-                ctx.rotate(angle + anglePerSector / 2);
+                ctx.rotate(angle + arc / 2);
                 ctx.textAlign = "right";
-                ctx.fillStyle = item.color === "#ffffff" ? "#004aad" : "#fff";
-                ctx.font = "bold 18px Arial";
-                ctx.fillText(item.label, 170, 8);
+                
+                // تحديد لون النص ونوعه
+                if (i % 2 === 0) { // الأقسام الزرقاء
+                    ctx.fillStyle = "#fff";
+                    const texts = ['عفاريت 1', 'الفزعة', 'عفاريت 2', 'السبيكة'];
+                    ctx.font = 'bold 22px Segoe UI';
+                    ctx.fillText(texts[i/2], 160, 10);
+                } else { // الأقسام البيضاء
+                    ctx.fillStyle = "#004aad";
+                    const texts = ['حظ موفق', 'عفاريت 3', 'حظ موفق', 'عفاريت 4'];
+                    ctx.font = 'bold 20px Segoe UI';
+                    ctx.fillText(texts[(i-1)/2], 160, 10);
+                }
                 ctx.restore();
-            });
+            }
 
-            // إضافة دائرة مركزية جمالية
-            ctx.beginPath();
-            ctx.arc(190, 190, 25, 0, Math.PI * 2);
-            ctx.fillStyle = "#fff";
-            ctx.fill();
-            ctx.strokeStyle = "#d4af37";
-            ctx.lineWidth = 5;
-            ctx.stroke();
-        }
-
-        draw();
-
-        let currentRotation = 0;
-        function executeSpin() {
-            const btn = document.getElementById('spinBtn');
-            btn.disabled = true;
-
-            // حساب زاوية الوقوف على "حظ موفق" دائماً
-            // لفة كاملة (360 * 10) + إزاحة محددة
-            const extraDegrees = 3600 + 45; 
-            currentRotation += extraDegrees;
-            
-            canvas.style.transform = `rotate(${currentRotation}deg)`;
-
-            setTimeout(() => {
-                document.getElementById('resultModal').style.display = 'block';
-            }, 7500);
-        }
-
-        function redirect() {
-            window.location.href = "https://www.facebook.com";
-        }
-    </script>
-</body>
-</html>
+            // إضافة دائ
