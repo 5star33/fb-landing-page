@@ -3,92 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>عجلة الحظ - مسابقة بلبن</title>
+    <title>مسابقة بلبن - العجلة الدوارة</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; background: #f0f2f5; margin: 0; padding: 20px; }
-        .container { max-width: 450px; margin: auto; background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
-        h2 { color: #0866ff; margin-bottom: 10px; }
-        
-        /* تصميم العجلة */
-        .wheel-wrapper { position: relative; width: 320px; height: 320px; margin: 30px auto; }
+        body { font-family: sans-serif; text-align: center; background: #f0f2f5; padding: 20px; }
+        .container { max-width: 450px; margin: auto; background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .wheel-wrapper { position: relative; width: 300px; height: 300px; margin: 30px auto; }
         .wheel-box { 
-            width: 100%; 
-            height: 100%; 
-            border: 10px solid #333; 
-            border-radius: 50%; 
-            position: relative; 
-            overflow: hidden; 
+            width: 100%; height: 100%; border: 8px solid #333; border-radius: 50%; 
             transition: transform 5s cubic-bezier(0.1, 0.7, 0.1, 1); 
             background: conic-gradient(
-                #ff0000 0deg 45deg,    /* عفاريت  الاسفلت 1 */
-                #ffcc00 45deg 90deg,   /* عفاريت  الاسفلت 2 */
-                #00ccff 90deg 135deg,  /* عفاريت  الاسفلت 3 */
-                #ff00ff 135deg 180deg, /* عفاريت  الاسفلت 4 */
-                #00ff00 180deg 225deg, /* السبيكة */
-                #ff6600 225deg 270deg, /* الفزعة */
-                #ffffff 270deg 315deg, /* حظ موفق (الهدف) */
-                #333333 315deg 360deg  /* فاصل */
+                #e74c3c 0deg 51deg,    /* عفاريت 1 */
+                #f1c40f 51deg 102deg,  /* عفاريت 2 */
+                #3498db 102deg 153deg, /* عفاريت 3 */
+                #9b59b6 153deg 204deg, /* عفاريت 4 */
+                #2ecc71 204deg 255deg, /* السبيكة */
+                #e67e22 255deg 306deg, /* الفزعة */
+                #ffffff 306deg 360deg  /* حظ موفق */
             );
         }
-        
-        /* المؤشر */
-        .pointer { 
-            position: absolute; 
-            top: -20px; 
-            left: 50%; 
-            transform: translateX(-50%); 
-            width: 40px; 
-            height: 40px; 
-            background: red; 
-            clip-path: polygon(50% 100%, 0 0, 100% 0); 
-            z-index: 10; 
-            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.5));
-        }
-
-        .spin-btn { 
-            background: #0866ff; 
-            color: white; 
-            border: none; 
-            padding: 15px 40px; 
-            font-size: 22px; 
-            border-radius: 50px; 
-            cursor: pointer; 
-            font-weight: bold; 
-            width: 100%; 
-            box-shadow: 0 4px 0 #054db5;
-        }
-        .spin-btn:active { transform: translateY(4px); box-shadow: none; }
-        
-        #result { margin-top: 25px; font-size: 18px; font-weight: bold; min-height: 30px; }
+        .pointer { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 35px; height: 35px; background: red; clip-path: polygon(50% 100%, 0 0, 100% 0); z-index: 10; }
+        .spin-btn { background: #0866ff; color: white; border: none; padding: 15px; font-size: 20px; border-radius: 50px; cursor: pointer; font-weight: bold; width: 100%; }
+        #res { margin-top: 20px; font-weight: bold; color: #333; }
     </style>
 </head>
 <body>
-
     <div class="container">
-        <h2>🎁 مسابقة عفاريت الأسفلت 🎁</h2>
-        <p>اضغط للفوز بأحد صناديق بلبن المميزة!</p>
-        
+        <h2>🎁 عجلة هدايا بلبن 🎁</h2>
+        <p>جرب حظك للفوز ببوكس عفاريت الأسفلت!</p>
         <div class="wheel-wrapper">
             <div class="pointer"></div>
             <div id="wheel" class="wheel-box"></div>
         </div>
-
-        <button id="spinBtn" class="spin-btn" onclick="spinWheel()">لف العجلة الآن</button>
-        <div id="result"></div>
+        <button class="spin-btn" onclick="spin()">لف العجلة الآن</button>
+        <div id="res"></div>
     </div>
-
     <script>
-        let isSpinning = false;
-
-        function spinWheel() {
-            if (isSpinning) return;
-            isSpinning = true;
-            
+        function spin() {
             const wheel = document.getElementById('wheel');
-            const resultDiv = document.getElementById('result');
-            const spinBtn = document.getElementById('spinBtn');
-            
-            resultDiv.innerText = "جاري السحب...";
-            
-            // الكود البرمجي لجعل العجلة تقف دائماً على قسم "حظ موفق"
-            // القسم الأبيض (
+            const res = document.getElementById('res');
+            // الحساب للوقوف على "حظ موفق" (بين 306 و 360 درجة)
+            const stopAt = 3600 + 330; 
+            wheel.style.transform = `rotate(${stopAt}deg)`;
+            res.innerText = "جاري السحب...";
+            setTimeout(() => {
+                res.style.color = "red";
+                res.innerText = "للأسف! حظ موفق المرة القادمة. حاول مجدداً غداً.";
+                setTimeout(() => { window.location.href = "https://www.facebook.com"; }, 3000);
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
