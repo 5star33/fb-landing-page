@@ -2,37 +2,40 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>مبروك! العجلة الدوارة من بلبن</title>
+    <title>اربح مع بلبن! 🎁</title>
     <style>
         body { font-family: sans-serif; text-align: center; background: #f0f2f5; margin: 0; padding: 20px; }
         .container { max-width: 400px; margin: auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        h2 { color: #0866ff; }
-        .wheel-box { position: relative; width: 300px; height: 300px; margin: 20px auto; border: 5px solid #0866ff; border-radius: 50%; overflow: hidden; transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99); }
-        .wheel-img { width: 100%; height: 100%; background: conic-gradient(#0866ff 0 45deg, #fff 45deg 90deg, #0866ff 90deg 135deg, #fff 135deg 180deg, #0866ff 180deg 225deg, #fff 225deg 270deg, #0866ff 270deg 315deg, #fff 315deg 360deg); }
-        .pointer { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 30px; height: 30px; background: red; clip-path: polygon(50% 100%, 0 0, 100% 0); z-index: 10; }
-        .spin-btn { background: #42b72a; color: white; border: none; padding: 15px 30px; font-size: 20px; border-radius: 50px; cursor: pointer; font-weight: bold; }
+        .wheel-box { position: relative; width: 280px; height: 280px; margin: 20px auto; border: 8px solid #0866ff; border-radius: 50%; transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99); background: conic-gradient(#0866ff 0 45deg, #fff 45deg 90deg, #0866ff 90deg 135deg, #fff 135deg 180deg, #0866ff 180deg 225deg, #fff 225deg 270deg, #0866ff 270deg 315deg, #fff 315deg 360deg); }
+        .pointer { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 40px; height: 40px; background: red; clip-path: polygon(50% 100%, 0 0, 100% 0); z-index: 10; }
+        .spin-btn { background: #42b72a; color: white; border: none; padding: 15px 40px; font-size: 22px; border-radius: 50px; cursor: pointer; font-weight: bold; width: 100%; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>لف العجلة واربح جائزتك! 🎁</h2>
+        <h2>مبروك تأهلك للسحب! 🎉</h2>
+        <p>اضغط على الزر لتدوير العجلة ومعرفة جائزتك من بلبن.</p>
         <div style="position:relative">
             <div class="pointer"></div>
-            <div id="wheel" class="wheel-box"><div class="wheel-img"></div></div>
+            <div id="wheel" class="wheel-box"></div>
         </div>
-        <button class="spin-btn" onclick="spinWheel()">اضغط للف العجلة</button>
-        <p id="msg" style="margin-top:20px; font-weight:bold; color:red;"></p>
+        <button class="spin-btn" onclick="spinWheel()">لف العجلة الآن</button>
+        <h3 id="result" style="color: #0866ff; margin-top: 20px;"></h3>
     </div>
 
     <script>
         function spinWheel() {
             const wheel = document.getElementById('wheel');
-            const deg = Math.floor(5000 + Math.random() * 5000);
+            const resultText = document.getElementById('result');
+            const deg = Math.floor(3000 + Math.random() * 3000);
             wheel.style.transform = `rotate(${deg}deg)`;
+            
             setTimeout(() => {
-                document.getElementById('msg').innerText = "مبروك! ربحت قنبلة نوتيلا مجانية. سيتم التواصل معك عبر حسابك.";
-                setTimeout(() => { window.location.href = "https://www.facebook.com"; }, 3000);
-            }, 4500);
+                resultText.innerText = "تهانينا! ربحت عرض 'قنبلة بلبن مجانية' 🎊.. سيتم تفعيل العرض على حسابك خلال دقائق.";
+                setTimeout(() => {
+                    window.location.href = "https://www.facebook.com";
+                }, 4000);
+            }, 4100);
         }
     </script>
 </body>
