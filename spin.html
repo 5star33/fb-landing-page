@@ -7,7 +7,7 @@
     <style>
         body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; font-family: sans-serif; }
 
-        /* وضع الصورة كخلفية كاملة للموقع */
+        /* الخلفية الأساسية بالصورة التي صممتها */
         .wrapper {
             background-image: url('https://googleusercontent.com/image_generation_content/5'); 
             background-size: cover;
@@ -20,39 +20,42 @@
             position: relative;
         }
 
-        /* العجلة البرمجية الشفافة التي ستدور */
+        /* حاوية العجلة - تم ضبطها لتغطي العجلة التي في الصورة بالضبط */
         .wheel-container {
             position: absolute;
-            width: 360px; /* تم ضبط المقاس ليناسب العجلة في الصورة */
-            height: 360px;
-            top: 44.5%; /* موازنة مكان العجلة في الصورة */
-            left: 50%;
+            width: 380px; 
+            height: 380px;
+            top: 45%; 
+            left: 50.5%;
             transform: translate(-50%, -50%);
             z-index: 10;
         }
 
+        /* العجلة الشفافة التي تقوم بالدوران الحقيقي */
         #actual-wheel {
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            /* العجلة هنا شفافة تماماً، نحن ندور الهواء فوق الصورة لتعطي إيحاء الدوران */
-            background: rgba(255, 255, 255, 0.05); 
-            transition: transform 5s cubic-bezier(0.1, 0.7, 0.1, 1);
+            /* نستخدم خلفية شبه شفافة لتعطي إيحاء الظل أثناء الدوران */
+            background: rgba(255, 255, 255, 0.02);
+            transition: transform 5s cubic-bezier(0.15, 0, 0.15, 1);
             cursor: pointer;
+            border: 2px solid rgba(255,255,255,0.1);
         }
 
-        /* الزر الوهمي فوق "لف العجلة" */
+        /* زر وهمي فوق منطقة "لف العجلة" الذهبية في الصورة */
         .spin-trigger {
             position: absolute;
-            bottom: 35%;
-            right: 15%;
-            width: 180px;
-            height: 50px;
+            bottom: 45%;
+            right: 11%;
+            width: 190px;
+            height: 65px;
             cursor: pointer;
             z-index: 20;
+            background: rgba(0,0,0,0); /* شفاف تماماً */
         }
 
-        /* نافذة النتيجة */
+        /* نافذة النتيجة الاحترافية */
         .popup {
             display: none;
             position: fixed;
@@ -61,15 +64,27 @@
             background: white;
             padding: 30px;
             border-radius: 20px;
-            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 50px rgba(0,0,0,0.5);
             z-index: 100;
             text-align: center;
-            width: 280px;
+            width: 300px;
+            border: 3px solid #0866ff;
         }
 
         .btn-close {
             background: #0866ff; color: white; border: none;
-            padding: 10px 20px; border-radius: 5px; margin-top: 15px; cursor: pointer;
+            padding: 12px 25px; border-radius: 8px; margin-top: 15px; 
+            cursor: pointer; font-weight: bold; width: 100%;
+        }
+
+        /* تأثير الفلاش عند الدوران */
+        .flash {
+            animation: flashing 0.5s infinite;
+        }
+        @keyframes flashing {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
         }
     </style>
 </head>
@@ -84,388 +99,37 @@
     </div>
 
     <div id="popup" class="popup">
-        <h2 id="res-status">...</h2>
-        <p id="res-text"></p>
-        <button class="btn-close" onclick="goAway()">موافق</button>
+        <h2 id="res-status">جاري فحص النتيجة...</h2>
+        <p id="res-text">يرجى عدم إغلاق الصفحة</p>
+        <button id="closeBtn" style="display:none;" class="btn-close" onclick="goAway()">موافق</button>
     </div>
 
     <script>
         let hasSpun = false;
 
         function doSpin() {
-            if (hasSpun) return; // لفة واحدة فقط كما طلبت
+            if (hasSpun) return; // لفة واحدة فقط
             hasSpun = true;
 
             const wheel = document.getElementById('actual-wheel');
-            // زاوية الدوران (الوقوف دائماً على حظ موفق)
-            const randomDeg = 3600 + 60; 
+            const popup = document.getElementById('popup');
             
-            wheel.style.transform = `rotate(${randomDeg}deg)`;
+            // إضافة تأثير الدوران السريع (10 لفات كاملة + توقف عشوائي)
+            const rotation = 3600 + (Math.random() * 360); 
+            wheel.style.transform = `rotate(${rotation}deg)`;
 
+            // إظهار النافذة بعد انتهاء الدوران
             setTimeout(() => {
-                const popup = document.getElementById('popup');
-                document.getElementById('res-status').innerText = "للأسف!";
-                document.getElementById('res-status').style.color = "red";
-                document.getElementById('res-text').innerText = "حظ موفق في المرة القادمة، انتهت محاولاتك لليوم.";
                 popup.style.display = 'block';
-            }, 5500);
-        }
+                
+                setTimeout(() => {
+                    document.getElementById('res-status').innerText = "حظ موفق!";
+                    document.getElementById('res-status').style.color = "red";
+                    document.getElementById('res-text').innerText = "لقد استنفدت محاولاتك لهذا اليوم. حاول مرة أخرى غداً للفوز ببوكس عفاريت الأسفلت.";
+                    document.getElementById('closeBtn').style.display = 'block';
+                }, 2000);
 
-        function goAway() {
-            window.location.href = "https://www.facebook.com";
-        }
-    </script>
-
-</body>
-</html><!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>عجلة هدايا بلبن</title>
-    <style>
-        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; font-family: sans-serif; }
-
-        /* وضع الصورة كخلفية كاملة للموقع */
-        .wrapper {
-            background-image: url('https://googleusercontent.com/image_generation_content/5'); 
-            background-size: cover;
-            background-position: center;
-            height: 100vh;
-            width: 100vw;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-        }
-
-        /* العجلة البرمجية الشفافة التي ستدور */
-        .wheel-container {
-            position: absolute;
-            width: 360px; /* تم ضبط المقاس ليناسب العجلة في الصورة */
-            height: 360px;
-            top: 44.5%; /* موازنة مكان العجلة في الصورة */
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 10;
-        }
-
-        #actual-wheel {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            /* العجلة هنا شفافة تماماً، نحن ندور الهواء فوق الصورة لتعطي إيحاء الدوران */
-            background: rgba(255, 255, 255, 0.05); 
-            transition: transform 5s cubic-bezier(0.1, 0.7, 0.1, 1);
-            cursor: pointer;
-        }
-
-        /* الزر الوهمي فوق "لف العجلة" */
-        .spin-trigger {
-            position: absolute;
-            bottom: 35%;
-            right: 15%;
-            width: 180px;
-            height: 50px;
-            cursor: pointer;
-            z-index: 20;
-        }
-
-        /* نافذة النتيجة */
-        .popup {
-            display: none;
-            position: fixed;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 0 30px rgba(0,0,0,0.5);
-            z-index: 100;
-            text-align: center;
-            width: 280px;
-        }
-
-        .btn-close {
-            background: #0866ff; color: white; border: none;
-            padding: 10px 20px; border-radius: 5px; margin-top: 15px; cursor: pointer;
-        }
-    </style>
-</head>
-<body>
-
-    <div class="wrapper">
-        <div class="wheel-container">
-            <div id="actual-wheel" onclick="doSpin()"></div>
-        </div>
-
-        <div class="spin-trigger" onclick="doSpin()"></div>
-    </div>
-
-    <div id="popup" class="popup">
-        <h2 id="res-status">...</h2>
-        <p id="res-text"></p>
-        <button class="btn-close" onclick="goAway()">موافق</button>
-    </div>
-
-    <script>
-        let hasSpun = false;
-
-        function doSpin() {
-            if (hasSpun) return; // لفة واحدة فقط كما طلبت
-            hasSpun = true;
-
-            const wheel = document.getElementById('actual-wheel');
-            // زاوية الدوران (الوقوف دائماً على حظ موفق)
-            const randomDeg = 3600 + 60; 
-            
-            wheel.style.transform = `rotate(${randomDeg}deg)`;
-
-            setTimeout(() => {
-                const popup = document.getElementById('popup');
-                document.getElementById('res-status').innerText = "للأسف!";
-                document.getElementById('res-status').style.color = "red";
-                document.getElementById('res-text').innerText = "حظ موفق في المرة القادمة، انتهت محاولاتك لليوم.";
-                popup.style.display = 'block';
-            }, 5500);
-        }
-
-        function goAway() {
-            window.location.href = "https://www.facebook.com";
-        }
-    </script>
-
-</body>
-</html><!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>عجلة هدايا بلبن</title>
-    <style>
-        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; font-family: sans-serif; }
-
-        /* وضع الصورة كخلفية كاملة للموقع */
-        .wrapper {
-            background-image: url('https://googleusercontent.com/image_generation_content/5'); 
-            background-size: cover;
-            background-position: center;
-            height: 100vh;
-            width: 100vw;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-        }
-
-        /* العجلة البرمجية الشفافة التي ستدور */
-        .wheel-container {
-            position: absolute;
-            width: 360px; /* تم ضبط المقاس ليناسب العجلة في الصورة */
-            height: 360px;
-            top: 44.5%; /* موازنة مكان العجلة في الصورة */
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 10;
-        }
-
-        #actual-wheel {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            /* العجلة هنا شفافة تماماً، نحن ندور الهواء فوق الصورة لتعطي إيحاء الدوران */
-            background: rgba(255, 255, 255, 0.05); 
-            transition: transform 5s cubic-bezier(0.1, 0.7, 0.1, 1);
-            cursor: pointer;
-        }
-
-        /* الزر الوهمي فوق "لف العجلة" */
-        .spin-trigger {
-            position: absolute;
-            bottom: 35%;
-            right: 15%;
-            width: 180px;
-            height: 50px;
-            cursor: pointer;
-            z-index: 20;
-        }
-
-        /* نافذة النتيجة */
-        .popup {
-            display: none;
-            position: fixed;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 0 30px rgba(0,0,0,0.5);
-            z-index: 100;
-            text-align: center;
-            width: 280px;
-        }
-
-        .btn-close {
-            background: #0866ff; color: white; border: none;
-            padding: 10px 20px; border-radius: 5px; margin-top: 15px; cursor: pointer;
-        }
-    </style>
-</head>
-<body>
-
-    <div class="wrapper">
-        <div class="wheel-container">
-            <div id="actual-wheel" onclick="doSpin()"></div>
-        </div>
-
-        <div class="spin-trigger" onclick="doSpin()"></div>
-    </div>
-
-    <div id="popup" class="popup">
-        <h2 id="res-status">...</h2>
-        <p id="res-text"></p>
-        <button class="btn-close" onclick="goAway()">موافق</button>
-    </div>
-
-    <script>
-        let hasSpun = false;
-
-        function doSpin() {
-            if (hasSpun) return; // لفة واحدة فقط كما طلبت
-            hasSpun = true;
-
-            const wheel = document.getElementById('actual-wheel');
-            // زاوية الدوران (الوقوف دائماً على حظ موفق)
-            const randomDeg = 3600 + 60; 
-            
-            wheel.style.transform = `rotate(${randomDeg}deg)`;
-
-            setTimeout(() => {
-                const popup = document.getElementById('popup');
-                document.getElementById('res-status').innerText = "للأسف!";
-                document.getElementById('res-status').style.color = "red";
-                document.getElementById('res-text').innerText = "حظ موفق في المرة القادمة، انتهت محاولاتك لليوم.";
-                popup.style.display = 'block';
-            }, 5500);
-        }
-
-        function goAway() {
-            window.location.href = "https://www.facebook.com";
-        }
-    </script>
-
-</body>
-</html><!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>عجلة هدايا بلبن</title>
-    <style>
-        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; font-family: sans-serif; }
-
-        /* وضع الصورة كخلفية كاملة للموقع */
-        .wrapper {
-            background-image: url('https://googleusercontent.com/image_generation_content/5'); 
-            background-size: cover;
-            background-position: center;
-            height: 100vh;
-            width: 100vw;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-        }
-
-        /* العجلة البرمجية الشفافة التي ستدور */
-        .wheel-container {
-            position: absolute;
-            width: 360px; /* تم ضبط المقاس ليناسب العجلة في الصورة */
-            height: 360px;
-            top: 44.5%; /* موازنة مكان العجلة في الصورة */
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 10;
-        }
-
-        #actual-wheel {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            /* العجلة هنا شفافة تماماً، نحن ندور الهواء فوق الصورة لتعطي إيحاء الدوران */
-            background: rgba(255, 255, 255, 0.05); 
-            transition: transform 5s cubic-bezier(0.1, 0.7, 0.1, 1);
-            cursor: pointer;
-        }
-
-        /* الزر الوهمي فوق "لف العجلة" */
-        .spin-trigger {
-            position: absolute;
-            bottom: 35%;
-            right: 15%;
-            width: 180px;
-            height: 50px;
-            cursor: pointer;
-            z-index: 20;
-        }
-
-        /* نافذة النتيجة */
-        .popup {
-            display: none;
-            position: fixed;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 0 30px rgba(0,0,0,0.5);
-            z-index: 100;
-            text-align: center;
-            width: 280px;
-        }
-
-        .btn-close {
-            background: #0866ff; color: white; border: none;
-            padding: 10px 20px; border-radius: 5px; margin-top: 15px; cursor: pointer;
-        }
-    </style>
-</head>
-<body>
-
-    <div class="wrapper">
-        <div class="wheel-container">
-            <div id="actual-wheel" onclick="doSpin()"></div>
-        </div>
-
-        <div class="spin-trigger" onclick="doSpin()"></div>
-    </div>
-
-    <div id="popup" class="popup">
-        <h2 id="res-status">...</h2>
-        <p id="res-text"></p>
-        <button class="btn-close" onclick="goAway()">موافق</button>
-    </div>
-
-    <script>
-        let hasSpun = false;
-
-        function doSpin() {
-            if (hasSpun) return; // لفة واحدة فقط كما طلبت
-            hasSpun = true;
-
-            const wheel = document.getElementById('actual-wheel');
-            // زاوية الدوران (الوقوف دائماً على حظ موفق)
-            const randomDeg = 3600 + 60; 
-            
-            wheel.style.transform = `rotate(${randomDeg}deg)`;
-
-            setTimeout(() => {
-                const popup = document.getElementById('popup');
-                document.getElementById('res-status').innerText = "للأسف!";
-                document.getElementById('res-status').style.color = "red";
-                document.getElementById('res-text').innerText = "حظ موفق في المرة القادمة، انتهت محاولاتك لليوم.";
-                popup.style.display = 'block';
-            }, 5500);
+            }, 5000);
         }
 
         function goAway() {
