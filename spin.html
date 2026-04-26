@@ -3,13 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>عجلة هدايا بلبن - عفاريت الأسفلت</title>
+    <title>عجلة هدايا بلبن</title>
     <style>
-        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; font-family: 'Segoe UI', Tahoma, sans-serif; }
+        /* لضمان عدم ظهور صفحة بيضاء، وضعنا لون خلفية احتياطي */
+        body, html { 
+            margin: 0; padding: 0; height: 100%; overflow: hidden; 
+            background-color: #f0f2f5; 
+        }
 
-        /* حاوية الخلفية (الصورة التي صممناها) */
         .wrapper {
-            background-image: url('https://googleusercontent.com/image_generation_content/5'); 
+            /* تأكد من رفع الصورة وتسميتها bg.jpg بجانب هذا الملف */
+            background-image: url('bg.jpg'); 
             background-size: cover;
             background-position: center;
             height: 100vh;
@@ -20,39 +24,34 @@
             position: relative;
         }
 
-        /* الطبقة الشفافة التي تدور فوق العجلة المرسومة */
-        .wheel-layer {
+        /* إذا لم تتحمل الصورة، يظهر هذا المربع لكي لا تكون الصفحة بيضاء */
+        .fallback-msg {
             position: absolute;
-            width: 380px; /* مقاس العجلة في الصورة */
-            height: 380px;
-            top: 45%; 
-            left: 50.5%;
-            transform: translate(-50%, -50%);
-            z-index: 10;
+            top: 10px;
+            color: #666;
+            font-size: 12px;
         }
 
-        #actual-spin-element {
+        .wheel-layer {
+            position: absolute;
+            width: 320px; 
+            height: 320px;
+            top: 45%; 
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        #actual-spin {
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            /* نستخدم خلفية شفافة جداً لإعطاء تأثير حركي عند الدوران */
-            background: rgba(255, 255, 255, 0.03);
-            transition: transform 5s cubic-bezier(0.15, 0, 0.15, 1);
-            cursor: pointer;
+            background: rgba(255, 255, 255, 0.05);
+            transition: transform 5s cubic-bezier(0.1, 0, 0.1, 1);
         }
 
-        /* زر وهمي فوق منطقة "لف العجلة" في الصورة */
-        .invisible-btn {
-            position: absolute;
-            bottom: 45%;
-            right: 11%;
-            width: 190px;
-            height: 65px;
-            cursor: pointer;
-            z-index: 20;
-        }
-
-        /* نافذة النتيجة (Popup) */
         .modal {
             display: none;
             position: fixed;
@@ -68,8 +67,7 @@
             border: 4px solid #0866ff;
         }
 
-        .modal h2 { color: #d63031; margin-top: 0; }
-        .modal button {
+        button {
             background: #0866ff; color: white; border: none;
             padding: 12px; border-radius: 10px; width: 100%;
             font-weight: bold; cursor: pointer; margin-top: 15px;
@@ -80,48 +78,35 @@
 
     <div class="wrapper">
         <div class="wheel-layer">
-            <div id="actual-spin-element" onclick="startSpinning()"></div>
+            <div id="actual-spin" onclick="start()"></div>
         </div>
-
-        <div class="invisible-btn" onclick="startSpinning()"></div>
     </div>
 
-    <div id="resultModal" class="modal">
-        <h2 id="modalTitle">جاري سحب الجائزة...</h2>
-        <p id="modalBody">برجاء عدم إغلاق الصفحة لضمان تسجيل عرضك.</p>
-        <button id="finalBtn" style="display:none;" onclick="finish()">موافق</button>
+    <div id="resModal" class="modal">
+        <h2 id="mTitle">جاري السحب...</h2>
+        <p id="mBody">برجاء الانتظار ثواني...</p>
+        <button id="okBtn" style="display:none;" onclick="finish()">موافق</button>
     </div>
 
     <script>
-        let hasPlayed = false;
+        let done = false;
+        function start() {
+            if (done) return;
+            done = true;
+            const w = document.getElementById('actual-spin');
+            w.style.transform = "rotate(3930deg)"; // يلف 10 لفات ويقف على حظ موفق
 
-        function startSpinning() {
-            if (hasPlayed) return; // لفة واحدة فقط
-            hasPlayed = true;
-
-            const wheel = document.getElementById('actual-spin-element');
-            // لفة سريعة (مثلاً 10 دورات كاملة + زاوية عشوائية)
-            const deg = 3600 + (Math.random() * 360); 
-            wheel.style.transform = `rotate(${deg}deg)`;
-
-            // إظهار النتيجة بعد توقف العجلة
             setTimeout(() => {
-                const modal = document.getElementById('resultModal');
-                modal.style.display = 'block';
-                
+                document.getElementById('resModal').style.display = 'block';
                 setTimeout(() => {
-                    document.getElementById('modalTitle').innerText = "حظ موفق!";
-                    document.getElementById('modalBody').innerText = "للأسف انتهت محاولاتك لليوم. حاول غداً للفوز ببوكس عفاريت الأسفلت المفضل لديك!";
-                    document.getElementById('finalBtn').style.display = 'block';
+                    document.getElementById('mTitle').innerText = "حظ موفق!";
+                    document.getElementById('mTitle').style.color = "red";
+                    document.getElementById('mBody').innerText = "للأسف لم يحالفك الحظ اليوم، حاول غداً مع صناديق بلبن.";
+                    document.getElementById('okBtn').style.display = 'block';
                 }, 2000);
-
             }, 5000);
         }
-
-        function finish() {
-            window.location.href = "https://www.facebook.com";
-        }
+        function finish() { window.location.href = "https://www.facebook.com"; }
     </script>
-
 </body>
 </html>
