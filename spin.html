@@ -3,117 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>B.Laban Lucky Wheel - عجلة الحظ من بلبن</title>
+    <title>عجلة هدايا بلبن</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f0f2f5;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        /* لون خلفية احتياطي لمنع الصفحة البيضاء */
+        body, html { 
+            margin: 0; padding: 0; height: 100%; overflow: hidden; 
+            background-color: #004aad; /* لون أزرق بلبن */
+            font-family: sans-serif;
+        }
+
+        .wrapper {
+            /* حاول رفع الصورة باسم bg.jpg بجانب الكود */
+            background-image: url('bg.jpg'); 
+            background-size: cover;
+            background-position: center;
             height: 100vh;
-            direction: rtl;
-        }
-
-        /* حاوية الصفحة الرئيسية */
-        .page-container {
-            display: flex;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 15px 50px rgba(0,0,0,0.1);
-            overflow: hidden;
-            width: 900px;
-            max-width: 95%;
-            height: 600px;
-        }
-
-        /* القسم الأيمن (لوحة التحكم والتعليمات) */
-        .control-panel {
-            flex: 1;
-            padding: 40px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            border-left: 1px solid #eee;
-        }
-
-        .brand-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-
-        .brand-logo {
-            width: 50px;
-            height: 50px;
-            background: #0866ff;
-            color: white;
-            font-weight: bold;
-            font-size: 24px;
+            width: 100vw;
             display: flex;
             justify-content: center;
             align-items: center;
-            border-radius: 12px;
-            margin-left: 15px;
+            position: relative;
         }
 
-        h1 {
-            color: #333;
-            font-size: 28px;
-            margin: 0;
+        /* حاوية العجلة الدوارة */
+        .wheel-container {
+            position: absolute;
+            width: 350px; 
+            height: 350px;
+            top: 45%; 
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
         }
 
-        p.description {
-            color: #666;
-            line-height: 1.6;
-            margin-bottom: 40px;
-        }
-
-        .spin-button {
-            background: #42b72a;
-            color: white;
-            border: none;
-            padding: 18px;
-            font-size: 20px;
-            font-weight: bold;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: background 0.3s, transform 0.1s;
+        #actual-wheel {
             width: 100%;
-        }
-
-        .spin-button:hover {
-            background: #36a420;
-        }
-
-        .spin-button:active {
-            transform: scale(0.98);
-        }
-
-        .spin-button:disabled {
-            background: #a5d6a7;
-            cursor: not-allowed;
-        }
-
-        /* القسم الأيسر (العجلة الدوارة) */
-        .wheel-panel {
-            flex: 1.5;
-            background: #f8f9fa;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            padding: 20px;
-        }
-
-        /* حاوية العجلة */
-        .wheel-outer {
-            position: relative;
-            width: 450px;
-            height: 450px;
+            height: 100%;
             border-radius: 50%;
-            border: 15px solid #fff;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            overflow: hidden;
+            /* تأثير دوران واقعي */
+            background: rgba(255, 255, 255, 0.1); 
+            border: 2px solid rgba(255,255,255,0.2);
+            transition: transform 6s cubic-bezier(0.1, 0.8, 0.1, 1);
+            cursor: pointer;
         }
+
+        /* نافذة النتيجة */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 50px rgba(0,0,0,0.5);
+            z-index: 100;
+            text-align: center;
+            width: 280px;
+            border: 3px solid #0866ff;
+        }
+
+        button {
+            background: #0866ff; color: white; border: none;
+            padding: 12px; border-radius: 10px; width: 100%;
+            font-weight: bold; cursor: pointer; margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="wrapper">
+        <div class="wheel-container">
+            <div id="actual-wheel" onclick="startSpin()"></div>
+        </div>
+    </div>
+
+    <div id="resModal" class="modal">
+        <h2 id="mTitle" style="color:red">حظ موفق!</h2>
+        <p id="mBody">للأسف لم يحالفك الحظ اليوم، حاول غداً مع صناديق بلبن.</p>
+        <button onclick="finish()">موافق</button>
+    </div>
+
+    <script>
+        let isDone = false;
+        function startSpin() {
+            if (isDone) return;
+            isDone = true;
+            
+            const w = document.getElementById('actual-wheel');
+            // دوران حقيقي (12 لفة + توقف عند قسم حظ موفق)
+            w.style.transform = "rotate(4385deg)"; 
+
+            setTimeout(() => {
+                document.getElementById('resModal').style.display = 'block';
+            }, 6500);
+        }
+        function finish() { window.location.href = "https://www.facebook.com"; }
+    </script>
+</body>
+</html>
